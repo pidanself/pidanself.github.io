@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="胡说第一次在博客上写读书总结，不知道写点什么好，不知道怎么写更有利于自己对知识的理解和掌握，不知道怎么写方便读者的阅读。困了睡会再说。 认识设计模式我们都知道代码的复用：别人写好的功能框架等代码，你可以直接拿来使用，而不必从头再写。而设计模式则是经验的复用，前辈们可能已经解决了你所面临的问题，并留下了优秀的解决方案。设计模式便是由那一类类问题和一套套解决方案构成。学习设计模式便是学习前辈们的经验和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式（一）">
+<meta property="og:url" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+<meta property="og:site_name" content="皮蛋的博客">
+<meta property="og:description" content="胡说第一次在博客上写读书总结，不知道写点什么好，不知道怎么写更有利于自己对知识的理解和掌握，不知道怎么写方便读者的阅读。困了睡会再说。 认识设计模式我们都知道代码的复用：别人写好的功能框架等代码，你可以直接拿来使用，而不必从头再写。而设计模式则是经验的复用，前辈们可能已经解决了你所面临的问题，并留下了优秀的解决方案。设计模式便是由那一类类问题和一套套解决方案构成。学习设计模式便是学习前辈们的经验和">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/duck1.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/%E5%B0%81%E8%A3%85%E8%A1%8C%E4%B8%BA.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/duck2.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/duck3.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData1.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData2.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData3.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData4.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData4.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData5.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData6.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89H.jpg">
+<meta property="article:published_time" content="2019-11-25T01:26:42.000Z">
+<meta property="article:modified_time" content="2019-11-25T11:34:18.899Z">
+<meta property="article:author" content="皮蛋">
+<meta property="article:tag" content="观察者模式">
+<meta property="article:tag" content="策略模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/duck1.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>设计模式（一） | 皮蛋的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">皮蛋的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">致力于成为中国第一，世界一流的我自己</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/mydog.jpeg">
+      <meta itemprop="name" content="皮蛋">
+      <meta itemprop="description" content="无烛无灯夜自明">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="皮蛋的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设计模式（一）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-11-25 09:26:42 / Modified: 19:34:18" itemprop="dateCreated datePublished" datetime="2019-11-25T09:26:42+08:00">2019-11-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="胡说"><a href="#胡说" class="headerlink" title="胡说"></a>胡说</h2><p>第一次在博客上写读书总结，不知道写点什么好，不知道怎么写更有利于自己对知识的理解和掌握，不知道怎么写方便读者的阅读。困了睡会再说。</p>
+<h2 id="认识设计模式"><a href="#认识设计模式" class="headerlink" title="认识设计模式"></a>认识设计模式</h2><p>我们都知道代码的复用：别人写好的功能框架等代码，你可以直接拿来使用，而不必从头再写。而设计模式则是经验的复用，前辈们可能已经解决了你所面临的问题，并留下了优秀的解决方案。设计模式便是由那一类类问题和一套套解决方案构成。学习设计模式便是学习前辈们的经验和智慧。</p>
+<p>同时，设计模式也是开发的行话，是程序员之间的共享词汇（就像我说老虎，你便会知道我在说什么，而如果我想通过对它具体描述让你知道我说的是什么动物则不容易），会大大提升团队之间的交流效率。</p>
+<a id="more"></a>
+<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><h3 id="抛砖引玉"><a href="#抛砖引玉" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h3><p>做一款模拟鸭子游戏，你的鸭子种类万千（外貌不一），技能众多（游泳、可能会叫、可能会飞等）。你的游戏也会大火，在后期的更新中可能会推出各种各样的鸭子供玩家快乐。你该如何设计类？</p>
+<h4 id="直观做法"><a href="#直观做法" class="headerlink" title="直观做法"></a>直观做法</h4><p>利用继承类，设计一个鸭子超类，各种类的鸭子继承超类。</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/duck1.png" class="" title="first attempt">
+
+<h4 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h4><ol>
+<li><p>第一次开发时，你就知道并不是所有的鸭子都会飞，试想橡皮鸭在天上飞是不是很荒唐？该如何处理？（即并不是所有的子类都应该包含某个功能）</p>
+<ul>
+<li>可不可以将fly()函数从父类duck中移除，在每一个子类继承后再决定是否添加fly()函数？不妥，代码在多个子类中重复（fly()函数不断重复）。</li>
+<li>可不可以在特定的子类中将其fly()函数覆盖为空代码？不妥，代码在多个子类中重复（空fly()函数不断重复）。</li>
+</ul>
+</li>
+<li><p>以后维护时，牵一发而动全身。比如我想让一些鸭子可以跳舞，我该怎么做呢？不论是在父类中增加新功能再逐一覆盖还是在各种特定的类中增加该功能都十分麻烦。</p>
+</li>
+<li><p>存在1 2问题则代表着，以后你每次增加新的功能你都需要核实各个子类；以后每增加一个新的子类，你都需要核实许多功能是否需要。</p>
+</li>
+</ol>
+<h3 id="主角登场"><a href="#主角登场" class="headerlink" title="主角登场"></a>主角登场</h3><h4 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h4><p>找出应用中可能需要变化之处（如果每次新的需要一来，总是要变化），把它们独立出来，不要和那些不需要变化的代码混在一起。</p>
+<h4 id="策略模式的做法"><a href="#策略模式的做法" class="headerlink" title="策略模式的做法"></a>策略模式的做法</h4><p>将duck易变的行为分离出来，一类行为设计一个接口，并在多个子类中实现该接口。如下：</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/%E5%B0%81%E8%A3%85%E8%A1%8C%E4%B8%BA.png" class="" title="飞、叫的封装">
+
+<p>在Duck父类中加入两个实例变量，分别为”flyBehavior”和”quackBehavior”,并定义函数”performQuack”和”performFly”来实现飞与叫。如下：</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/duck2.png" class="" title="duck的父类">
+<p>两个函数的具体代码为：</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/duck3.png" class="" title="duck的父类">
+
+<p>以后每次新增一个种类的鸭子（新的子类），只需要在其构造函数中，对”flyBehavior”和”quackBehavior”两个变量赋予具体的子类即可。</p>
+<h4 id="策略模式的抽象"><a href="#策略模式的抽象" class="headerlink" title="策略模式的抽象"></a>策略模式的抽象</h4><p>定义了算法族（实现鸭子行为接口的各个具体子类），分别封装起来（鸭子行为的接口），让他们之间可以相互替代（可以在替换鸭子类中接口变量的具体指向），此模式让算法的变化独立于使用算法的客户。（这么抽象你很难理解，记住上文策略模式的实现思想即可）。</p>
+<h2 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h2><h3 id="抛砖引玉-1"><a href="#抛砖引玉-1" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h3><p>气象站要开发软件，其中有一个WeatherData类，如下：</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData1.png" class="" title="天气类">
+<p>我们的任务，开发三个布告板，每当天气数据变化时在布告板上更新对应的数据（同时后期还会增加其他布告板）。</p>
+<h4 id="直观做法-1"><a href="#直观做法-1" class="headerlink" title="直观做法"></a>直观做法</h4><p>如上图所说，每当天气数据变化时，便会调用measurementsChanged()函数，我们在该函数中对三个布告板对象依次进行数据的更新，则可实现气象站的要求，代码如下：</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData2.png" class="" title="直观尝试">
+
+<h4 id="存在的问题-1"><a href="#存在的问题-1" class="headerlink" title="存在的问题"></a>存在的问题</h4><ol>
+<li><p>针对具体实现编程，会导致我们以后在增加或删除布告板时必须修改程序。</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData3.png" class="" title="针对具体实现编程">
+</li>
+<li><p>更新函数update传参数时没封装，代码有重复。（当然这不是观察者模式要解决的问题）</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData4.png" class="" title="参数应封装">
+
+</li>
+</ol>
+<h3 id="主角登场-1"><a href="#主角登场-1" class="headerlink" title="主角登场"></a>主角登场</h3><h4 id="设计原则-1"><a href="#设计原则-1" class="headerlink" title="设计原则"></a>设计原则</h4><p>为了交互对象之间的松耦合设计而努力。</p>
+<h4 id="观察者模式的做法"><a href="#观察者模式的做法" class="headerlink" title="观察者模式的做法"></a>观察者模式的做法</h4><p>创建主题与观察者接口，WeatherData实现主题接口，布告板实现观察者接口。如下：</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData4.png" class="" title="整体设计图">
+
+<p>在WeatherData类与布告板类中具体实现注册、通知、退订等功能，如下：</p>
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData5.png" class="" title="WeatherData类的具体实现">
+<img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/WeatherData6.png" class="" title="布告类的具体实现">
+
+<p>其中观察者的update()接口传递了各种参数，不利于以后扩展增加其他参数且许多观察者并不需要全部参数。我们可以开放主题类的get接口，让观察者自行通过get接口获取自己想要的参数（java的util包中内置的主题、观察者接口便是如此做的）。</p>
+<h4 id="观察者模式的抽象"><a href="#观察者模式的抽象" class="headerlink" title="观察者模式的抽象"></a>观察者模式的抽象</h4><p>定义了对象之间的一（主题）对多（观察者）依赖（notify(),update()等），当一个对象（主题）改变状态时，它的所有依赖者（观察者）都会收到通知并自动更新。</p>
+<h4 id="观察者模式的应用"><a href="#观察者模式的应用" class="headerlink" title="观察者模式的应用"></a>观察者模式的应用</h4><ol>
+<li>Swing中的应用</li>
+<li>MVC</li>
+</ol>
+<h2 id="今日必应"><a href="#今日必应" class="headerlink" title="今日必应"></a>今日必应</h2><img src="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89H.jpg" class="" title="This is an example image">
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请皮蛋喝杯卡布奇诺</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="皮蛋 WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="皮蛋 Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/" rel="tag"># 观察者模式</a>
+              <a href="/tags/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/" rel="tag"># 策略模式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/16/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/" rel="next" title="设计模式（二）">
+      设计模式（二） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#胡说"><span class="nav-number">1.</span> <span class="nav-text">胡说</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#认识设计模式"><span class="nav-number">2.</span> <span class="nav-text">认识设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#策略模式"><span class="nav-number">3.</span> <span class="nav-text">策略模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抛砖引玉"><span class="nav-number">3.1.</span> <span class="nav-text">抛砖引玉</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#直观做法"><span class="nav-number">3.1.1.</span> <span class="nav-text">直观做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存在的问题"><span class="nav-number">3.1.2.</span> <span class="nav-text">存在的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主角登场"><span class="nav-number">3.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设计原则"><span class="nav-number">3.2.1.</span> <span class="nav-text">设计原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#策略模式的做法"><span class="nav-number">3.2.2.</span> <span class="nav-text">策略模式的做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#策略模式的抽象"><span class="nav-number">3.2.3.</span> <span class="nav-text">策略模式的抽象</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#观察者模式"><span class="nav-number">4.</span> <span class="nav-text">观察者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抛砖引玉-1"><span class="nav-number">4.1.</span> <span class="nav-text">抛砖引玉</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#直观做法-1"><span class="nav-number">4.1.1.</span> <span class="nav-text">直观做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存在的问题-1"><span class="nav-number">4.1.2.</span> <span class="nav-text">存在的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主角登场-1"><span class="nav-number">4.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设计原则-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">设计原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#观察者模式的做法"><span class="nav-number">4.2.2.</span> <span class="nav-text">观察者模式的做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#观察者模式的抽象"><span class="nav-number">4.2.3.</span> <span class="nav-text">观察者模式的抽象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#观察者模式的应用"><span class="nav-number">4.2.4.</span> <span class="nav-text">观察者模式的应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#今日必应"><span class="nav-number">5.</span> <span class="nav-text">今日必应</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="皮蛋"
+      src="/images/mydog.jpeg">
+  <p class="site-author-name" itemprop="name">皮蛋</p>
+  <div class="site-description" itemprop="description">无烛无灯夜自明</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/pidanself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;pidanself" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:pidanself@163.com" title="E-Mail → mailto:pidanself@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">皮蛋</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'W9AVLWbeQ8vFt7dWWddtOcnt-gzGzoHsz',
+    appKey: '8HJHrSbadRM75FuwwuezSAfF',
+    placeholder: "写点什么……",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

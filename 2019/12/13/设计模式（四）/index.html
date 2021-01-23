@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="胡说今日的必应是一只鸟，但引起了我的些许不适，故采用我喜爱的昨日必应。 这周过的顺利，有情绪低落，也有现在的情绪高涨。我的情绪会受到外界的影响，我需要积极去探寻更好的情绪管理方式、探寻更好的生活方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式（四）">
+<meta property="og:url" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/index.html">
+<meta property="og:site_name" content="皮蛋的博客">
+<meta property="og:description" content="胡说今日的必应是一只鸟，但引起了我的些许不适，故采用我喜爱的昨日必应。 这周过的顺利，有情绪低落，也有现在的情绪高涨。我的情绪会受到外界的影响，我需要积极去探寻更好的情绪管理方式、探寻更好的生活方式。">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/bing.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F1.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F2.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F3.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F4.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F5.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F6.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F1.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F2.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F3.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F1.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F2.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F3.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F4.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F5.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F6.png">
+<meta property="article:published_time" content="2019-12-13T02:40:55.000Z">
+<meta property="article:modified_time" content="2019-12-13T14:48:18.226Z">
+<meta property="article:author" content="皮蛋">
+<meta property="article:tag" content="适配器模式">
+<meta property="article:tag" content="外观模式">
+<meta property="article:tag" content="模版方法模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/bing.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>设计模式（四） | 皮蛋的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">皮蛋的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">致力于成为中国第一，世界一流的我自己</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/mydog.jpeg">
+      <meta itemprop="name" content="皮蛋">
+      <meta itemprop="description" content="无烛无灯夜自明">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="皮蛋的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设计模式（四）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-12-13 10:40:55 / Modified: 22:48:18" itemprop="dateCreated datePublished" datetime="2019-12-13T10:40:55+08:00">2019-12-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/bing.jpg" class="" title="昨日必应">
+
+<h2 id="胡说"><a href="#胡说" class="headerlink" title="胡说"></a>胡说</h2><p>今日的必应是一只鸟，但引起了我的些许不适，故采用我喜爱的昨日必应。</p>
+<p>这周过的顺利，有情绪低落，也有现在的情绪高涨。我的情绪会受到外界的影响，我需要积极去探寻更好的情绪管理方式、探寻更好的生活方式。<a id="more"></a></p>
+<p>这周还完成了自己的第一个剪辑视频，对视视频剪辑有了初步的入门。</p>
+<p>红楼梦也看到了70多回，最爱的女子之一便是探春了，做事有理有节，遇人不卑不亢，看书的过程中忍不住让我为她拍手叫好。</p>
+<p>我也开始算法方面的准备了，时间是很紧迫的，也马上到考试周了，也有课程要结课。</p>
+<h2 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h2><p>现实中的适配器，比如有一个欧式插座，但你的电脑插头是中式的，无法直接插到欧式插座上获取电力，那该怎么办呢？对，适配器，我们需要一个适配器，它工作于欧式插座与中式插头中间，将欧式插座转变为中式插座，以便中式插头可以插上获取电力。</p>
+<p>同理，OO适配器的作用：将一个接口转换成另一个接口，以符合客户的期望。</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F1.png" class="" title="适配器作用示图">
+
+<h3 id="抛砖引玉"><a href="#抛砖引玉" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h3><p>现在假设，我需鸭子对象用，想用一些火鸡来冒充，如下：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F2.png" class="" title="鸭子、火鸡和你">
+<p>该如何在让客户端仍使用鸭子对象接口的情况下使用火鸡对象？</p>
+<h3 id="主角登场"><a href="#主角登场" class="headerlink" title="主角登场"></a>主角登场</h3><h4 id="适配器模式的做法"><a href="#适配器模式的做法" class="headerlink" title="适配器模式的做法"></a>适配器模式的做法</h4><p>创建火鸡适配器类，继承自Duck接口，该适配器实质就是鸭子类，但在其中定义一个火鸡对象，在鸭子的接口函数中调用火鸡对象的函数，如下：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F3.png" class="" title="火鸡适配器">
+<p>其类图则如下：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F4.png" class="" title="火鸡适配器类图">
+
+<h4 id="适配器模式的抽象"><a href="#适配器模式的抽象" class="headerlink" title="适配器模式的抽象"></a>适配器模式的抽象</h4><p>将一个类（火鸡类）的接口，转换成客户期望的另一个接口（鸭子类的接口）。适配器让原本接口不兼容的类可以合作无间。类图如下：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F5.png" class="" title="适配器模式类图">
+
+<h4 id="类适配器与对象适配器"><a href="#类适配器与对象适配器" class="headerlink" title="类适配器与对象适配器"></a>类适配器与对象适配器</h4><p>类适配器通过继承target类和adaptee类（更有效率，通过继承会省一些代码），来完成接口转换。对象适配器（更有弹性）通过组合的方式（可以适配一个类或接口的所有子类）将请求传送给被适配者：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F6.png" class="" title="类适配器与对象适配器的对比">
+
+<h2 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h2><p>将一个或数个类的复杂的一切都隐藏在背后，只显露出一个干净美好的外观。</p>
+<h3 id="抛砖引玉-1"><a href="#抛砖引玉-1" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h3><p>你在加搭建了一个家庭影院，如果你想看一部电影该做什么呢？必须先执行如下操作：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F1.png" class="" title="家庭影院看电影">
+<p>代码便是：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F2.png" class="" title="家庭影院看电影代码">
+<p>不止这样，如果想要结束看电影你又该做什么呢？当然是重复一遍刚刚操作的相反！那也太麻烦了！所以我们该怎么做才能让我每次看电影的时候能够简单方便呢？</p>
+<h3 id="主角登场-1"><a href="#主角登场-1" class="headerlink" title="主角登场"></a>主角登场</h3><h4 id="外观模式的做法"><a href="#外观模式的做法" class="headerlink" title="外观模式的做法"></a>外观模式的做法</h4><p>提供简单的接口，如watchMovie()，我只需要每次调用该接口就可以开始看电影，而这个接口便实现了各种各样的设备的操作。</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F3.png" class="" title="外观模式看电影">
+
+<h4 id="外观模式的抽象"><a href="#外观模式的抽象" class="headerlink" title="外观模式的抽象"></a>外观模式的抽象</h4><p>提供了一个统一的接口（watchMovie()），用来访问子系统中的一群接口（dvd,popper,light….）。外观定义了一个高层接口，让子系统更容易使用。</p>
+<h4 id="对比外观模式与适配器模式"><a href="#对比外观模式与适配器模式" class="headerlink" title="对比外观模式与适配器模式"></a>对比外观模式与适配器模式</h4><p>适配器模式的意图是将接口转换为客户需要的接口。</p>
+<p>外观模式的意图是简化接口。</p>
+<h2 id="模版方法模式"><a href="#模版方法模式" class="headerlink" title="模版方法模式"></a>模版方法模式</h2><p>模版方法定义了一个算法的步骤，并允许子类为一个或多个步骤提供实现。</p>
+<h3 id="抛砖引玉-2"><a href="#抛砖引玉-2" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h3><p>有人嗜茶如命，有人则离不开咖啡，而它们都属于咖啡因类饮品。其制作方法也十分相似，如下：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F1.png" class="" title="咖啡制作与茶制作">
+<p>既然咖啡与茶的制作如此相似，那么我们可以尝试将共同的部分抽取出来，放进一个基类。注意，最重要的函数便是prepareRecipe()。</p>
+<h3 id="主角登场-2"><a href="#主角登场-2" class="headerlink" title="主角登场"></a>主角登场</h3><h4 id="模版方法模式的做法"><a href="#模版方法模式的做法" class="headerlink" title="模版方法模式的做法"></a>模版方法模式的做法</h4><p>prepareRecipe()方法在每个类中都不一样，故定义为抽象方法，让每个子类各自实现。boilWater()与pourCup()方法每个子类都相同，故可以定义在超类中并设为final。其余没有共同处的函数各自在子类中自行实现。类图如下：</p>
+<img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F2.png" class="" title="咖啡因超类类图">
+
+<h4 id="模版方法模式更进一步"><a href="#模版方法模式更进一步" class="headerlink" title="模版方法模式更进一步"></a>模版方法模式更进一步</h4><ol>
+<li>抽象prepareRecipe: <img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F3.png" class="" title="抽象提取prepareRecipe"></li>
+<li>对咖啡因超类进行改造 <img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F4.png" class="" title="改造"></li>
+<li>对子类进行修改 <img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F5.png" class="" title="子类改造">
+
+</li>
+</ol>
+<h4 id="模版方法模式的抽象"><a href="#模版方法模式的抽象" class="headerlink" title="模版方法模式的抽象"></a>模版方法模式的抽象</h4><p>在一个方法中定义一个算法的骨架（咖啡因类中的prepareRecipe()），而将一些步骤（brew()）延迟到子类中实现。模版方法使得子类在不改变算法结构的情况下，重新定义算法中的某些步骤。</p>
+<h4 id="模版方法模式的深入"><a href="#模版方法模式的深入" class="headerlink" title="模版方法模式的深入"></a>模版方法模式的深入</h4><img src="/2019/12/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%9B%9B%EF%BC%89/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F6.png" class="" title="有哪些函数">
+<p>如上图所表述，模版方法中可以有三类函数：</p>
+<ol>
+<li>原语函数：在超类中不做实现，只定义为abtract类，必须又子类实现。</li>
+<li>模范函数：在超类中实现并定义为final，不允许子类修改。</li>
+<li>钩子函数：在超类中给出函数，函数中可能有代码也可能没有，子类视情况决定是否覆盖钩子函数。</li>
+</ol>
+<h4 id="模版方法模式的应用"><a href="#模版方法模式的应用" class="headerlink" title="模版方法模式的应用"></a>模版方法模式的应用</h4><ol>
+<li>Arrays中的sort函数（继承类需要实现compareTo()函数）</li>
+<li>JFrame</li>
+<li>Applet</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请皮蛋喝杯卡布奇诺</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="皮蛋 WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="皮蛋 Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/" rel="tag"># 适配器模式</a>
+              <a href="/tags/%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/" rel="tag"># 外观模式</a>
+              <a href="/tags/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/" rel="tag"># 模版方法模式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/09/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%89%EF%BC%89/" rel="prev" title="设计模式（三）">
+      <i class="fa fa-chevron-left"></i> 设计模式（三）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%94%EF%BC%89/" rel="next" title="设计模式（五）">
+      设计模式（五） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#胡说"><span class="nav-number">1.</span> <span class="nav-text">胡说</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适配器模式"><span class="nav-number">2.</span> <span class="nav-text">适配器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抛砖引玉"><span class="nav-number">2.1.</span> <span class="nav-text">抛砖引玉</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主角登场"><span class="nav-number">2.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#适配器模式的做法"><span class="nav-number">2.2.1.</span> <span class="nav-text">适配器模式的做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#适配器模式的抽象"><span class="nav-number">2.2.2.</span> <span class="nav-text">适配器模式的抽象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类适配器与对象适配器"><span class="nav-number">2.2.3.</span> <span class="nav-text">类适配器与对象适配器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外观模式"><span class="nav-number">3.</span> <span class="nav-text">外观模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抛砖引玉-1"><span class="nav-number">3.1.</span> <span class="nav-text">抛砖引玉</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主角登场-1"><span class="nav-number">3.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#外观模式的做法"><span class="nav-number">3.2.1.</span> <span class="nav-text">外观模式的做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外观模式的抽象"><span class="nav-number">3.2.2.</span> <span class="nav-text">外观模式的抽象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对比外观模式与适配器模式"><span class="nav-number">3.2.3.</span> <span class="nav-text">对比外观模式与适配器模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模版方法模式"><span class="nav-number">4.</span> <span class="nav-text">模版方法模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抛砖引玉-2"><span class="nav-number">4.1.</span> <span class="nav-text">抛砖引玉</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主角登场-2"><span class="nav-number">4.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#模版方法模式的做法"><span class="nav-number">4.2.1.</span> <span class="nav-text">模版方法模式的做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模版方法模式更进一步"><span class="nav-number">4.2.2.</span> <span class="nav-text">模版方法模式更进一步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模版方法模式的抽象"><span class="nav-number">4.2.3.</span> <span class="nav-text">模版方法模式的抽象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模版方法模式的深入"><span class="nav-number">4.2.4.</span> <span class="nav-text">模版方法模式的深入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模版方法模式的应用"><span class="nav-number">4.2.5.</span> <span class="nav-text">模版方法模式的应用</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="皮蛋"
+      src="/images/mydog.jpeg">
+  <p class="site-author-name" itemprop="name">皮蛋</p>
+  <div class="site-description" itemprop="description">无烛无灯夜自明</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/pidanself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;pidanself" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:pidanself@163.com" title="E-Mail → mailto:pidanself@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">皮蛋</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'W9AVLWbeQ8vFt7dWWddtOcnt-gzGzoHsz',
+    appKey: '8HJHrSbadRM75FuwwuezSAfF',
+    placeholder: "写点什么……",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

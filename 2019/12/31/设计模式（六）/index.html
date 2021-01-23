@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="胡说最近有些好事发生，比如说今天金拱门全家桶买一送一（名字中有金相关的字），比如说下学期不用每天都去所里可以自己安排时间，比如说和洪源老师明天晚上约了饭，比如说推完了荒野大镖客救赎的主线并准备开始二刷。 但也有很多伤心的事（姑且称之为伤心），想换手机的冲动与没钱的现实之间的矛盾，即将考试与懒得复习的矛盾，希望抓紧时间又总在浪费时间之间的矛盾。 代理模式代理模式有些抽象。书中具的问题以及解决方案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式（六）">
+<meta property="og:url" content="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/index.html">
+<meta property="og:site_name" content="皮蛋的博客">
+<meta property="og:description" content="胡说最近有些好事发生，比如说今天金拱门全家桶买一送一（名字中有金相关的字），比如说下学期不用每天都去所里可以自己安排时间，比如说和洪源老师明天晚上约了饭，比如说推完了荒野大镖客救赎的主线并准备开始二刷。 但也有很多伤心的事（姑且称之为伤心），想换手机的冲动与没钱的现实之间的矛盾，即将考试与懒得复习的矛盾，希望抓紧时间又总在浪费时间之间的矛盾。 代理模式代理模式有些抽象。书中具的问题以及解决方案">
+<meta property="og:image" content="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/bing.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F1.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F3.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F4.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F2.png">
+<meta property="article:published_time" content="2019-12-31T08:36:19.000Z">
+<meta property="article:modified_time" content="2021-01-23T14:39:36.614Z">
+<meta property="article:author" content="皮蛋">
+<meta property="article:tag" content="代理模式">
+<meta property="article:tag" content="复合模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/bing.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>设计模式（六） | 皮蛋的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">皮蛋的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">致力于成为中国第一，世界一流的我自己</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/mydog.jpeg">
+      <meta itemprop="name" content="皮蛋">
+      <meta itemprop="description" content="无烛无灯夜自明">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="皮蛋的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设计模式（六）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-31 16:36:19" itemprop="dateCreated datePublished" datetime="2019-12-31T16:36:19+08:00">2019-12-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-23 22:39:36" itemprop="dateModified" datetime="2021-01-23T22:39:36+08:00">2021-01-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/bing.jpg" class="" title="必应">
+
+<h2 id="胡说"><a href="#胡说" class="headerlink" title="胡说"></a>胡说</h2><p>最近有些好事发生，比如说今天金拱门全家桶买一送一（名字中有金相关的字），比如说下学期不用每天都去所里可以自己安排时间，比如说和洪源老师明天晚上约了饭，比如说推完了荒野大镖客救赎的主线并准备开始二刷。</p>
+<p>但也有很多伤心的事（姑且称之为伤心），想换手机的冲动与没钱的现实之间的矛盾，即将考试与懒得复习的矛盾，希望抓紧时间又总在浪费时间之间的矛盾。</p>
+<h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>代理模式有些抽象。书中具的问题以及解决方案不知道是否已经过时。</p>
+<h3 id="抛砖引玉"><a href="#抛砖引玉" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h3><p>天安门门口有一个糖果机，作为维护人员我希望我能够在中关村的办公室就可以看到糖果机的当前状况。我该怎么做？</p>
+<h4 id="直观做法"><a href="#直观做法" class="headerlink" title="直观做法"></a>直观做法</h4><p>困难在于，糖果机的实例化对象运行在天安门糖果机的JVM上，而中关村的电脑上有自己的JVM,如何在一个JVM中调用远程的另一个JVM的对象的方法呢？</p>
+<h3 id="主角登场"><a href="#主角登场" class="headerlink" title="主角登场"></a>主角登场</h3><p>在中关村本地创建代理对象，客户端就像是在做远程方法调用，但其实只是调用了本地堆中的“代理”对象上的方法，再由代理处理所有网络通信的底层细节（java已经封装了一套代理模式RMI，帮助我们处理网络通信的底层细节）。</p>
+<img src="/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F1.png" class="" title="代理在糖果机中">
+
+<h4 id="代理模式的做法"><a href="#代理模式的做法" class="headerlink" title="代理模式的做法"></a>代理模式的做法</h4><p>具体如何使用rmi去解决这个问题就不在这里细讲。</p>
+<h3 id="虚拟代理"><a href="#虚拟代理" class="headerlink" title="虚拟代理"></a>虚拟代理</h3><img src="/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F3.png" class="" title="虚拟代理">
+
+<h3 id="保护代理"><a href="#保护代理" class="headerlink" title="保护代理"></a>保护代理</h3><p>有点像之前项目开发中控制角色权限的解决方案。</p>
+<img src="/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F4.png" class="" title="保护代理">
+
+<h3 id="代理模式的抽象"><a href="#代理模式的抽象" class="headerlink" title="代理模式的抽象"></a>代理模式的抽象</h3><p>为另一个对象提供替身或占位符以控制对这个对象的访问。</p>
+<img src="/2019/12/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%85%AD%EF%BC%89/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F2.png" class="" title="代理模式抽象类图">
+
+<h2 id="复合模式"><a href="#复合模式" class="headerlink" title="复合模式"></a>复合模式</h2><p>复合模式在一个解决方案中结合两个或多个模式，以解决一般或重复发生的问题。</p>
+<h3 id="抛砖引玉-1"><a href="#抛砖引玉-1" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h3><p>MVC：数个设计模式结合起来的复合模式。视图（用来呈现模型，用户界面啥的）、控制器（取得用户的输入并解读其对模型的意思）和模型（模型持有所有的数据、状态和程序逻辑（不能理解））。</p>
+<h3 id="主角登场-1"><a href="#主角登场-1" class="headerlink" title="主角登场"></a>主角登场</h3><h4 id="复合模式的做法"><a href="#复合模式的做法" class="headerlink" title="复合模式的做法"></a>复合模式的做法</h4><p>视图和控制器之间使用策略模式实现：视图是一个对象可以被调整使用不同的策略，而控制器提供了策略。保证了我们可以在视图不知情的情况下改变我们的策略（控制器），比如播放器的播放按钮按下，a控制得到输入理解为用户想要播放歌曲，而b控制器得到输入后则理解为播放歌曲并锁定屏幕。</p>
+<p>模型实现了观察者模式，当状态改变时，相关对象会更新，即使将更新信息传递给在自己这里注册了的视图和控制器。</p>
+<p>视图实现了组合模式。显示包括了窗口、面板、按钮和文本标签等。每个显示组件不是组合结点就是叶结点，当控制器告诉视图更新的时候，只需要告诉视图的最顶层组件即可。</p>
+<h4 id="复合模式的抽象"><a href="#复合模式的抽象" class="headerlink" title="复合模式的抽象"></a>复合模式的抽象</h4><p>复合模式在一个解决方案中结合两个或多个模式，以解决一般或重复发生的问题。</p>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>模式的学习可能刚刚开始，以后在不断的项目实践中才能更进一步理解各种模式的精妙，这两章书上的例子都很复杂就不在这里写出所以这篇博客很短。<br>学习复合模式的时候，也意识到这本书已经看了很久了，前面的知识已经有所遗忘，在下学期面试前一定是要再过一遍的，接下来的两周以及寒假的时间就是复习考试+算法提升+学车+见见同学+学学java+毕设+导师那边的项目，算来事情还很多。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请皮蛋喝杯卡布奇诺</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="皮蛋 WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="皮蛋 Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" rel="tag"># 代理模式</a>
+              <a href="/tags/%E5%A4%8D%E5%90%88%E6%A8%A1%E5%BC%8F/" rel="tag"># 复合模式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%94%EF%BC%89/" rel="prev" title="设计模式（五）">
+      <i class="fa fa-chevron-left"></i> 设计模式（五）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/23/%E9%9A%8F%E6%83%B3ONE/" rel="next" title="随想ONE">
+      随想ONE <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#胡说"><span class="nav-number">1.</span> <span class="nav-text">胡说</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理模式"><span class="nav-number">2.</span> <span class="nav-text">代理模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抛砖引玉"><span class="nav-number">2.1.</span> <span class="nav-text">抛砖引玉</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#直观做法"><span class="nav-number">2.1.1.</span> <span class="nav-text">直观做法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主角登场"><span class="nav-number">2.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#代理模式的做法"><span class="nav-number">2.2.1.</span> <span class="nav-text">代理模式的做法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟代理"><span class="nav-number">2.3.</span> <span class="nav-text">虚拟代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保护代理"><span class="nav-number">2.4.</span> <span class="nav-text">保护代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代理模式的抽象"><span class="nav-number">2.5.</span> <span class="nav-text">代理模式的抽象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复合模式"><span class="nav-number">3.</span> <span class="nav-text">复合模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抛砖引玉-1"><span class="nav-number">3.1.</span> <span class="nav-text">抛砖引玉</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主角登场-1"><span class="nav-number">3.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#复合模式的做法"><span class="nav-number">3.2.1.</span> <span class="nav-text">复合模式的做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#复合模式的抽象"><span class="nav-number">3.2.2.</span> <span class="nav-text">复合模式的抽象</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后言"><span class="nav-number">4.</span> <span class="nav-text">后言</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="皮蛋"
+      src="/images/mydog.jpeg">
+  <p class="site-author-name" itemprop="name">皮蛋</p>
+  <div class="site-description" itemprop="description">无烛无灯夜自明</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/pidanself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;pidanself" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:pidanself@163.com" title="E-Mail → mailto:pidanself@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">皮蛋</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'W9AVLWbeQ8vFt7dWWddtOcnt-gzGzoHsz',
+    appKey: '8HJHrSbadRM75FuwwuezSAfF',
+    placeholder: "写点什么……",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

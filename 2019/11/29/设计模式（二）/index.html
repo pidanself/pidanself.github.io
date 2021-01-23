@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="胡说这周看红楼梦，看到30回，解书的教授欧丽娟（台湾大学）说后面袭人被卖（教授总爱剧透……），不免让我伤心，红楼梦的一个魅力就在于，读者很容易感同身受，就像我看到黛玉葬花吟的时候，感慨万千，悲从中来。 今晚要去吃海底捞，开心😄 回归正题，有请今晚的嘉宾装饰者先生。 装饰者模式抛砖引玉为星巴兹咖啡店开发订单系统，则咖啡这一部分的类该如何设计开发？比如可以点拿铁、美式浓缩、加糖拿铁、加奶美式浓缩">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式（二）">
+<meta property="og:url" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="皮蛋的博客">
+<meta property="og:description" content="胡说这周看红楼梦，看到30回，解书的教授欧丽娟（台湾大学）说后面袭人被卖（教授总爱剧透……），不免让我伤心，红楼梦的一个魅力就在于，读者很容易感同身受，就像我看到黛玉葬花吟的时候，感慨万千，悲从中来。 今晚要去吃海底捞，开心😄 回归正题，有请今晚的嘉宾装饰者先生。 装饰者模式抛砖引玉为星巴兹咖啡店开发订单系统，则咖啡这一部分的类该如何设计开发？比如可以点拿铁、美式浓缩、加糖拿铁、加奶美式浓缩">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/bing.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee1.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee2.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee3.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee4.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee5.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee6.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee7.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory1.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory2.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory2.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory3.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory4.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory5.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory6.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory7.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory8.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory14.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory15.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory9.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory10.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory11.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory12.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory13.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory16.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/bing1.jpg">
+<meta property="article:published_time" content="2019-11-29T05:49:44.000Z">
+<meta property="article:modified_time" content="2019-12-01T08:10:10.699Z">
+<meta property="article:author" content="皮蛋">
+<meta property="article:tag" content="装饰者模式">
+<meta property="article:tag" content="工厂模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/bing.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>设计模式（二） | 皮蛋的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">皮蛋的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">致力于成为中国第一，世界一流的我自己</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/mydog.jpeg">
+      <meta itemprop="name" content="皮蛋">
+      <meta itemprop="description" content="无烛无灯夜自明">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="皮蛋的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设计模式（二）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-11-29 13:49:44" itemprop="dateCreated datePublished" datetime="2019-11-29T13:49:44+08:00">2019-11-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-01 16:10:10" itemprop="dateModified" datetime="2019-12-01T16:10:10+08:00">2019-12-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/bing.jpg" class="" title="今日必应">
+
+<h2 id="胡说"><a href="#胡说" class="headerlink" title="胡说"></a>胡说</h2><p>这周看红楼梦，看到30回，解书的教授欧丽娟（台湾大学）说后面袭人被卖（教授总爱剧透……），不免让我伤心，红楼梦的一个魅力就在于，读者很容易感同身受，就像我看到黛玉葬花吟的时候，感慨万千，悲从中来。</p>
+<p>今晚要去吃海底捞，开心😄</p>
+<p>回归正题，有请今晚的嘉宾装饰者先生。</p>
+<h2 id="装饰者模式"><a href="#装饰者模式" class="headerlink" title="装饰者模式"></a>装饰者模式</h2><h3 id="抛砖引玉"><a href="#抛砖引玉" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h3><p>为星巴兹咖啡店开发订单系统，则咖啡这一部分的类该如何设计开发？比如可以点拿铁、美式浓缩、加糖拿铁、加奶美式浓缩、双倍加奶美式浓缩……<a id="more"></a></p>
+<h4 id="直观做法"><a href="#直观做法" class="headerlink" title="直观做法"></a>直观做法</h4><p>利用继承类，设计一个咖啡的超类，各种具体咖啡子类继承超类。</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee1.png" class="" title="第一次尝试">
+
+<h4 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h4><ol>
+<li><p>第一次开发时，你就知道这个设计是多么愚蠢了。咖啡有10种，配料有10种，那么能搭配出来多少种子类呢？无数种！如下图：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee2.png" class="" title="第一次尝试">
+</li>
+<li><p>以后维护时，牵一发而动全身。比如我想更改某一配料的价格（比如牛奶价格上涨），那就得把所有涉及到该配料的子类都进行修改。</p>
+</li>
+</ol>
+<h4 id="直观改进"><a href="#直观改进" class="headerlink" title="直观改进"></a>直观改进</h4><p>利用实例变量（实例布尔变量代表是否有某种配料）和继承，同时在超类中的cost函数中计算除了饮料本身以外的配料价格并返回，在子类中的cost的函数引用super.cost()再加上本身定价作为cost的返回值。设计如下：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee3.png" class="" title="第二次尝试">
+
+<h4 id="存在的问题-1"><a href="#存在的问题-1" class="headerlink" title="存在的问题"></a>存在的问题</h4><ol>
+<li><p>调料加钱的改变会使我们改变现有代码：</p>
+</li>
+<li><p>一旦出现新的调料，我们就需要加上新的布尔值、新的调料的价格，改变cost函数的写法。</p>
+</li>
+<li><p>有的饮料不应该有一些配料，就像前面我们所提到的皮鸭子不应该会飞。</p>
+</li>
+<li><p>顾客想要双倍奶泡怎么办？（可以将布尔变量改为int变量代表数目）</p>
+</li>
+</ol>
+<h3 id="主角登场"><a href="#主角登场" class="headerlink" title="主角登场"></a>主角登场</h3><h4 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h4><p>类应该对扩展开放，对修改关闭（在不修改代码现有代码的情况下，可搭配新的行为）。</p>
+<h4 id="装饰者模式的做法"><a href="#装饰者模式的做法" class="headerlink" title="装饰者模式的做法"></a>装饰者模式的做法</h4><p>以饮料为主题，然后在运行时以调料来“装饰”。类图设计如下：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee4.png" class="" title="咖啡的装饰类图">
+
+<p>接下来，如果我们想要摩卡和奶泡深焙咖啡，则过程代码应为：</p>
+<figure class="highlight java"><figcaption><span>点咖啡过程</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//双份摩卡 一份奶油 的dark roast</span></span><br><span class="line">Beverage beverage1=<span class="keyword">new</span> HouseBlend();</span><br><span class="line">beverage1=<span class="keyword">new</span> Mocha(beverage1);</span><br><span class="line">beverage1=<span class="keyword">new</span> Mocha(beverage1);</span><br><span class="line">beverage1=<span class="keyword">new</span> Whip(beverage1);</span><br></pre></td></tr></table></figure>
+
+<p>计算价格的设计则为：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee5.png" class="" title="计算价格">
+
+<h4 id="装饰者模式的抽象"><a href="#装饰者模式的抽象" class="headerlink" title="装饰者模式的抽象"></a>装饰者模式的抽象</h4><p>动态地将责任附加到对象上。若要扩展功能，装饰者提供了比继承更有弹性的扩展方案（增加装饰者的子类）。</p>
+<h4 id="装饰者模式的抽象设计图"><a href="#装饰者模式的抽象设计图" class="headerlink" title="装饰者模式的抽象设计图"></a>装饰者模式的抽象设计图</h4><img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee6.png" class="" title="装饰者模式的抽象设计图">
+
+<h4 id="装饰者模式的应用"><a href="#装饰者模式的应用" class="headerlink" title="装饰者模式的应用"></a>装饰者模式的应用</h4><p>i/o的设计</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/coffee7.png" class="" title="i&#x2F;o的设计图">
+
+<h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><h3 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h3><p>不知道是书的原因还是我的原因还是客观原因，这一章学起来很费劲，可能是因为包含的内容比较多。</p>
+<h3 id="简单工厂"><a href="#简单工厂" class="headerlink" title="简单工厂"></a>简单工厂</h3><p>实际上这不是一个真正设计模式，更像是一种编程习惯。（我不能理解书中这句话）</p>
+<h4 id="抛砖引玉-1"><a href="#抛砖引玉-1" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h4><p>我们要为必胜客开发一个订单系统，我们现在有很多种披萨，后期维护的过程中也可能上架或下架披萨。</p>
+<h5 id="直观做法-1"><a href="#直观做法-1" class="headerlink" title="直观做法"></a>直观做法</h5><p>下订单的函数代码可能是这样的</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory1.png" class="" title="订单函数">
+<p>根据传入的参数来决定来new哪一个类型的披萨。</p>
+<h5 id="存在的问题-2"><a href="#存在的问题-2" class="headerlink" title="存在的问题"></a>存在的问题</h5><ol>
+<li>如果要上架或下架披萨，我们就需要不断修改此处代码<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory2.png" class="" title="针对具体实现编程">
+在项目中，不仅oderPizza函数会有这部分代码，还有其他部分的函数也需要使用此部分代码，比如PizzaShopMenu函数等等。</li>
+</ol>
+<h4 id="主角登场-1"><a href="#主角登场-1" class="headerlink" title="主角登场"></a>主角登场</h4><h5 id="设计原则-1"><a href="#设计原则-1" class="headerlink" title="设计原则"></a>设计原则</h5><ol>
+<li><p>找出应用中可能需要变化之处（如果每次新的需要一来，总是要变化），把它们独立出来，不要和那些不需要变化的代码混在一起。</p>
+</li>
+<li><p>通过抽取公共部分放置在一个地方避免代码重复</p>
+</li>
+</ol>
+<h5 id="简单工厂的做法"><a href="#简单工厂的做法" class="headerlink" title="简单工厂的做法"></a>简单工厂的做法</h5><p>定义一个工厂类，在这个类中定义一个函数专门用来new披萨。如下：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory2.png" class="" title="简单工厂类">
+
+<p>披萨系统的类图如下：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory3.png" class="" title="简单工厂类">
+
+<h5 id="简单工厂的抽象"><a href="#简单工厂的抽象" class="headerlink" title="简单工厂的抽象"></a>简单工厂的抽象</h5><p>定义一个工厂类，专门用来帮助我们new具体的对象。</p>
+<h3 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h3><h4 id="抛砖引玉-2"><a href="#抛砖引玉-2" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h4><p>我不能理解书中引入工厂方法模式的原因，因为我没有看到他有什么优点是简单工厂无法做到的，如果您理解这部分，请留言与我交流，以下为书中做法：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory4.png" class="" title="工厂方法模式引入的原因">
+
+
+<h4 id="主角登场-2"><a href="#主角登场-2" class="headerlink" title="主角登场"></a>主角登场</h4><h5 id="设计原则-2"><a href="#设计原则-2" class="headerlink" title="设计原则"></a>设计原则</h5><ol>
+<li><p>找出应用中可能需要变化之处（如果每次新的需要一来，总是要变化），把它们独立出来，不要和那些不需要变化的代码混在一起。</p>
+</li>
+<li><p>通过抽取公共部分放置在一个地方避免代码重复</p>
+</li>
+</ol>
+<h5 id="工厂方法模式的做法"><a href="#工厂方法模式的做法" class="headerlink" title="工厂方法模式的做法"></a>工厂方法模式的做法</h5><p>在PizzaStore类中定义抽象的工厂方法：生产披萨的函数createPizza(type)，如下：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory5.png" class="" title="工厂方法现在是抽象的">
+
+<p>接着，让每个区域的store子类继承上述超类，每个子类自行决定如何具体地生产披萨，如下：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory6.png" class="" title="纽约的披萨店">
+
+<h5 id="工厂方法模式的抽象"><a href="#工厂方法模式的抽象" class="headerlink" title="工厂方法模式的抽象"></a>工厂方法模式的抽象</h5><p>定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类。在超类中定义抽象的工厂生产函数，在子类中具体实现创建对象</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory7.png" class="" title="抽象">
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory8.png" class="" title="抽象">
+
+<h3 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h3><h4 id="抛砖引玉-3"><a href="#抛砖引玉-3" class="headerlink" title="抛砖引玉"></a>抛砖引玉</h4><p>要如何确保每家加盟店都使用高质量的原料而没有偷工减料呢？你打算建立原料工厂，提供给各加盟店原来哦，有一个问题便是：不同区域的加盟店，相同的原料做法也不同，这又该如何区分？</p>
+<h4 id="主角登场-3"><a href="#主角登场-3" class="headerlink" title="主角登场"></a>主角登场</h4><h5 id="设计原则-3"><a href="#设计原则-3" class="headerlink" title="设计原则"></a>设计原则</h5><p>要依赖抽象，不要依赖具体类–&gt;依赖倒置原则</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory14.png" class="" title="依赖倒置原则">
+
+<p>而工厂方法模式在具体的披萨店中生产披萨则依赖具体的披萨类：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory15.png" class="" title="依赖倒置原则">
+
+<h5 id="抽象工厂模式的做法"><a href="#抽象工厂模式的做法" class="headerlink" title="抽象工厂模式的做法"></a>抽象工厂模式的做法</h5><p>开始先为工厂定义一个接口，这个接口负责创建所有原料：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory9.png" class="" title="原料工厂的接口">
+
+<p>各区域的原料工厂继承于原料工厂接口：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory10.png" class="" title="纽约的原料工厂">
+
+<p>修改披萨超类的prepare函数，定义其为抽象函数：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory11.png" class="" title="纽约的披萨店">
+
+<p>修改具体披萨子类，在其中定义原料工厂的超类，编写prepare函数：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory12.png" class="" title="芝士披萨">
+
+<p>修改纽约披萨店子类的创建披萨的代码：</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory13.png" class="" title="纽约披萨店">
+
+<h5 id="抽象工厂模式的抽象"><a href="#抽象工厂模式的抽象" class="headerlink" title="抽象工厂模式的抽象"></a>抽象工厂模式的抽象</h5><p>提供一个接口（pizza的超类），用于创建相关或依赖对象的家族（pizza家族），而不需要明确指定具体类（不用具体new纽约芝士，只需要new芝士同时传入原料工厂）。</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/factory16.png" class="" title="我快疯了orz">
+
+<p>附：工厂模式我看了一天半，写这部分内容也用了快一天。博客写的很乱，先理解到这里，等以后再回来重新理解梳理。</p>
+<img src="/2019/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89/bing1.jpg" class="" title="今日必应">
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请皮蛋喝杯卡布奇诺</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="皮蛋 WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="皮蛋 Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/" rel="tag"># 装饰者模式</a>
+              <a href="/tags/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" rel="tag"># 工厂模式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%80%EF%BC%89/" rel="prev" title="设计模式（一）">
+      <i class="fa fa-chevron-left"></i> 设计模式（一）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/09/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%89%EF%BC%89/" rel="next" title="设计模式（三）">
+      设计模式（三） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#胡说"><span class="nav-number">1.</span> <span class="nav-text">胡说</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装饰者模式"><span class="nav-number">2.</span> <span class="nav-text">装饰者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抛砖引玉"><span class="nav-number">2.1.</span> <span class="nav-text">抛砖引玉</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#直观做法"><span class="nav-number">2.1.1.</span> <span class="nav-text">直观做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存在的问题"><span class="nav-number">2.1.2.</span> <span class="nav-text">存在的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#直观改进"><span class="nav-number">2.1.3.</span> <span class="nav-text">直观改进</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存在的问题-1"><span class="nav-number">2.1.4.</span> <span class="nav-text">存在的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主角登场"><span class="nav-number">2.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设计原则"><span class="nav-number">2.2.1.</span> <span class="nav-text">设计原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#装饰者模式的做法"><span class="nav-number">2.2.2.</span> <span class="nav-text">装饰者模式的做法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#装饰者模式的抽象"><span class="nav-number">2.2.3.</span> <span class="nav-text">装饰者模式的抽象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#装饰者模式的抽象设计图"><span class="nav-number">2.2.4.</span> <span class="nav-text">装饰者模式的抽象设计图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#装饰者模式的应用"><span class="nav-number">2.2.5.</span> <span class="nav-text">装饰者模式的应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工厂模式"><span class="nav-number">3.</span> <span class="nav-text">工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#吐槽"><span class="nav-number">3.1.</span> <span class="nav-text">吐槽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单工厂"><span class="nav-number">3.2.</span> <span class="nav-text">简单工厂</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#抛砖引玉-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">抛砖引玉</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#直观做法-1"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">直观做法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#存在的问题-2"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">存在的问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主角登场-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#设计原则-1"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">设计原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#简单工厂的做法"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">简单工厂的做法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#简单工厂的抽象"><span class="nav-number">3.2.2.3.</span> <span class="nav-text">简单工厂的抽象</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工厂方法模式"><span class="nav-number">3.3.</span> <span class="nav-text">工厂方法模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#抛砖引玉-2"><span class="nav-number">3.3.1.</span> <span class="nav-text">抛砖引玉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主角登场-2"><span class="nav-number">3.3.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#设计原则-2"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">设计原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#工厂方法模式的做法"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">工厂方法模式的做法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#工厂方法模式的抽象"><span class="nav-number">3.3.2.3.</span> <span class="nav-text">工厂方法模式的抽象</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抽象工厂模式"><span class="nav-number">3.4.</span> <span class="nav-text">抽象工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#抛砖引玉-3"><span class="nav-number">3.4.1.</span> <span class="nav-text">抛砖引玉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主角登场-3"><span class="nav-number">3.4.2.</span> <span class="nav-text">主角登场</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#设计原则-3"><span class="nav-number">3.4.2.1.</span> <span class="nav-text">设计原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#抽象工厂模式的做法"><span class="nav-number">3.4.2.2.</span> <span class="nav-text">抽象工厂模式的做法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#抽象工厂模式的抽象"><span class="nav-number">3.4.2.3.</span> <span class="nav-text">抽象工厂模式的抽象</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="皮蛋"
+      src="/images/mydog.jpeg">
+  <p class="site-author-name" itemprop="name">皮蛋</p>
+  <div class="site-description" itemprop="description">无烛无灯夜自明</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/pidanself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;pidanself" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:pidanself@163.com" title="E-Mail → mailto:pidanself@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">皮蛋</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: true,
+    appId: 'W9AVLWbeQ8vFt7dWWddtOcnt-gzGzoHsz',
+    appKey: '8HJHrSbadRM75FuwwuezSAfF',
+    placeholder: "写点什么……",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>
